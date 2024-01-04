@@ -10,6 +10,10 @@ app.use(cors());
 app.use(express.json());
 
 mongoose.connect(process.env.DBCONNECTION)
+  .then(() => {console.log("Connection successful!")})
+  .catch((error) => {
+    console.log(error)
+  })
 
 const server = app.listen(process.env.PORT, () => {
 

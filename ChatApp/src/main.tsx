@@ -1,6 +1,10 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './pages/App.tsx'
+import Login from './pages/Login.tsx'
+import Register from './pages/Register.tsx'
+import './index.css'
+import {NextUIProvider} from "@nextui-org/react";
 
 import {
   createBrowserRouter,
@@ -12,11 +16,21 @@ const router = createBrowserRouter([
     path: "/",
     element: <App />,
   },
+
+  {
+    path: "/Login",
+    element: <Login />,
+  },
+
+  {
+    path: "/Register",
+    element: <Register />,
+  },
 ]);
 
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
-  <React.StrictMode>
+  <NextUIProvider>
     <RouterProvider router={router} />
-  </React.StrictMode>,
+  </NextUIProvider>,
 )

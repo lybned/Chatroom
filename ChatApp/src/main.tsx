@@ -1,29 +1,29 @@
-import React from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './pages/App.tsx'
 import Login from './pages/Login.tsx'
 import Register from './pages/Register.tsx'
 import './index.css'
-import {NextUIProvider} from "@nextui-org/react";
+import {NextUIProvider} from "@nextui-org/react"
+import axios from "axios"
+axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL as string
 
 import {
   createBrowserRouter,
-  RouterProvider,
+  RouterProvider
 } from "react-router-dom";
+
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <App />,
   },
-
   {
-    path: "/Login",
+    path: "/signin",
     element: <Login />,
   },
-
   {
-    path: "/Register",
+    path: "/register",
     element: <Register />,
   },
 ]);

@@ -1,7 +1,9 @@
-import {Input, Button} from "@nextui-org/react";
+import {Input, Button, Link} from "@nextui-org/react";
 import React, { useState } from 'react';
 import {EyeFilledIcon} from "../assets/EyeFilledIcon";
 import {EyeSlashFilledIcon} from "../assets/EyeSlashFilledIcon";
+import axios from "axios";
+
 
 function Register () {
   const [isVisible, setIsVisible] = React.useState(false);
@@ -10,15 +12,26 @@ function Register () {
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [email, setEmail] = useState<string>("");
-
-  const RegisterAccount = () => {
+  console.log(import.meta.env.VITE_NAME)
+  const RegisterAccount = async () => {
+    const { data } = await axios.post("/api/user", {
+      username,
+      password,
+      email
+    })
     console.log(username, password, email)
+    if (!data.status){
+      console.log(data.message)
+    } else {
+      localStorage.setItem("user", JSON.stringify(data.user))
+    }
   }
   return (
     <div className="flex flex-col items-center justify-items-center">
-      <div className="flex flex-col items-center justify-items-center w-1/2">
+      <div className="flex flex-col items-center justify-items-center w-1/3 bg-emerald-50 p-3 rounded-lg">
+        <h2>Sign Up</h2>
         <Input 
-          className="my-3"
+          className="my-3 w-3/4"
           type="text"
           label="Username"
           placeholder="Enter your username"
@@ -40,18 +53,21 @@ function Register () {
             </button>
           }
           type={isVisible ? "text" : "password"}
-          className="my-3"
+          className="my-3 bg-default-100 rounded-medium w-3/4"
         />
 
         <Input 
-        className="my-3"
+        className="my-3 w-3/4"
           type="email"
           label="Email"
           placeholder="Enter your email"
           onValueChange={setEmail}
         />
 
-        <Button onClick={RegisterAccount}>Register</Button>
+        <Button onClick={RegisterAccount}>Sign Up</Button>
+
+
+        <p>Already have an account? <Link href="/signin">Sign In here</Link></p>
       </div>      
     </div>
 

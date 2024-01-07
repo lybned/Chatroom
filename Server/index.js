@@ -1,6 +1,7 @@
 const express = require("express")
 const cors = require("cors")
 const mongoose = require("mongoose")
+const userRoutes = require('./userRoutes/routes');
 
 const app = express();
 
@@ -15,8 +16,8 @@ mongoose.connect(process.env.DBCONNECTION)
     console.log(error)
   })
 
+app.use('/api', userRoutes);
+
 const server = app.listen(process.env.PORT, () => {
-
   console.log(`Server Started on Port ${process.env.PORT}`);
-
 })

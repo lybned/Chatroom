@@ -60,5 +60,20 @@ module.exports.login = async (req, res, next) => {
   } catch(error){
     next(error)
   }
+}
 
+
+module.exports.allUsers = async (req, res, next) => {
+  try {
+    const allUsers = await User.find({})
+    if (allUsers){
+      let allUsername = allUsers.map(x => x.username)
+      return res.json({allUsername, status:true})
+    }
+
+    return res.json({"message":"No users found.", status:false});
+
+  } catch(error){
+    next(error)
+  }
 }

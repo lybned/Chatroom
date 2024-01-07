@@ -1,17 +1,16 @@
-const { register, login } = require("../controller/userController");
+const { register, login, allUsers } = require("../controller/userController");
 const express = require('express');
 const router = express.Router();
 
 // Define routes
-router.get('/users', (req, res) => {
-  res.send('List of users');
-});
+
 
 router.get('/users/:id', (req, res) => {
   const userId = req.params.id;
   res.send(`Details of user ${userId}`);
 });
 
+router.get('/users', allUsers);
 router.post('/user', register);
 router.post('/signin', login);
 

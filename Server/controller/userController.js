@@ -1,10 +1,15 @@
 const User = require("../model/userModel")
 const brcypt = require("bcrypt");
+const jwt = require('jsonwebtoken');
+
+function generateAccessToken(user) {
+  return jwt.sign({payload:{user}}, process.env.JWT, { expiresIn: '1800s' });
+}
 
 module.exports.register = async (req, res, next) => {
   try{
-    const {username, email, password} = req.body;
 
+    const {username, email, password} = req.body;
 
     const usernameCheck = await User.findOne({username});
     console.log(usernameCheck)
@@ -27,8 +32,8 @@ module.exports.register = async (req, res, next) => {
     })
 
     delete user.password;
-
-    return res.json({status:true, user})    
+    const token = generateAccessToken(user)
+    return res.json({status:true, user, token})    
   } catch(error){
     next(error)
   }
@@ -56,7 +61,9 @@ module.exports.login = async (req, res, next) => {
 
     delete loginUser.password;
 
-    return res.json({status:true, loginUser})    
+    const token = generateAccessToken(loginUser)
+
+    return res.json({status:true, loginUser, token})    
   } catch(error){
     next(error)
   }
@@ -68,8 +75,29 @@ module.exports.allUsers = async (req, res, next) => {
     const allUsers = await User.find({})
     if (allUsers){
       let allUsername = allUsers.map(x => x.username)
+
+      //Verify the token
+      const authHeader = req.headers['authorization']
+      const token = authHeader && authHeader.split(' ')[1]
+      if (token == null) return res.sendStatus(401)
+
+      jwt.verify(token, process.env.JWT, (err, user) => {
+        console.log(err)
+    
+        if (err) return res.sendStatus(403)
+    
+        req.user = user
+    
+        next()
+      })
+
+      console.log(token)      
+
+
       return res.json({allUsername, status:true})
     }
+
+
 
     return res.json({"message":"No users found.", status:false});
 

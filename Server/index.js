@@ -20,4 +20,5 @@ app.use('/api', userRoutes);
 
 const server = app.listen(process.env.PORT, () => {
   console.log(`Server Started on Port ${process.env.PORT}`);
+  console.log(require('crypto').randomBytes(64).toString('hex'))
 })

@@ -72,10 +72,10 @@ module.exports.login = async (req, res, next) => {
 
 module.exports.allUsers = async (req, res, next) => {
   try {
-    const allUsers = await User.find({})
+    const allUsers = await User.find({}, '-password')
     if (allUsers){
-      let allUsername = allUsers.map(x => x.username)
-
+      //let allUsername = allUsers.map(x => x.username)
+      
       //Verify the token
       const authHeader = req.headers['authorization']
       const token = authHeader && authHeader.split(' ')[1]
@@ -94,13 +94,35 @@ module.exports.allUsers = async (req, res, next) => {
       console.log(token)      
 
 
-      return res.json({allUsername, status:true})
+      return res.json({allUsers, status:true})
     }
-
-
-
     return res.json({"message":"No users found.", status:false});
 
+  } catch(error){
+    next(error)
+  }
+}
+
+module.exports.currentUser = async (req, res, next) => {
+  try {
+    //Verify the token
+    const authHeader = req.headers['authorization']
+    const token = authHeader && authHeader.split(' ')[1]
+    if (token == null) return res.sendStatus(401)
+
+    jwt.verify(token, process.env.JWT, (err, user) => {
+      console.log(err)
+
+      if (err) return res.sendStatus(403)
+
+      req.user = user
+      
+      data = user.payload.user
+      delete data.password;
+      return res.json({data, status:true})
+
+      next()
+    })    
   } catch(error){
     next(error)
   }

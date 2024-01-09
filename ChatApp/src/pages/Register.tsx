@@ -3,9 +3,11 @@ import React, { useState } from 'react';
 import {EyeFilledIcon} from "../assets/EyeFilledIcon";
 import {EyeSlashFilledIcon} from "../assets/EyeSlashFilledIcon";
 import axios from "axios";
-
+import { useNavigate } from 'react-router-dom';
 
 function Register () {
+  const navigate = useNavigate();
+
   const [isVisible, setIsVisible] = React.useState(false);
   const toggleVisibility = () => setIsVisible(!isVisible);
 
@@ -25,6 +27,7 @@ function Register () {
     } else {
       console.log(data)
       localStorage.setItem("user", data.token)
+      navigate('/'); 
     }
   }
   return (

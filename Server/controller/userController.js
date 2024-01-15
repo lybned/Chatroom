@@ -1,6 +1,8 @@
 const User = require("../model/userModel")
 const brcypt = require("bcrypt");
 const jwt = require('jsonwebtoken');
+const mongoose = require("mongoose")
+
 
 function generateAccessToken(user) {
   return jwt.sign({payload:{user}}, process.env.JWT, { expiresIn: '1800s' });
@@ -72,11 +74,12 @@ module.exports.login = async (req, res, next) => {
 
 module.exports.allUsers = async (req, res, next) => {
   try {
-    const allUsers = await User.find({}, '-password')
-    if (allUsers){
+    //const allUsers = await User.find({}, '-password')
+    //if (allUsers){
       //let allUsername = allUsers.map(x => x.username)
       
       //Verify the token
+      let a = ""
       const authHeader = req.headers['authorization']
       const token = authHeader && authHeader.split(' ')[1]
       if (token == null) return res.sendStatus(401)
@@ -87,16 +90,16 @@ module.exports.allUsers = async (req, res, next) => {
         if (err) return res.sendStatus(403)
     
         req.user = user
-    
-        next()
+        a = user.payload.user._id
+
       })
 
-      console.log(token)      
-
-
-      return res.json({allUsers, status:true})
-    }
-    return res.json({"message":"No users found.", status:false});
+ 
+      const excludedId = new mongoose.Types.ObjectId(a )
+      const allUsers = await User.find({ _id: { $ne: excludedId } })
+      return res.json({allUsers,status:true})
+    //}
+    //return res.json({"message":"No users found.", status:false});
 
   } catch(error){
     next(error)
@@ -121,7 +124,6 @@ module.exports.currentUser = async (req, res, next) => {
       delete data.password;
       return res.json({data, status:true})
 
-      next()
     })    
   } catch(error){
     next(error)

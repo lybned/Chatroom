@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken');
 module.exports.addMesage = async (req, res, next) => {
   try {
     const {from, to, message} = req.body;
-    console.log(from, to, message)
+    //console.log(from, to, message)
     const data = await messageModel.create(
       {text:message,users: [from, to],sender: from}
     )
@@ -23,20 +23,22 @@ module.exports.addMesage = async (req, res, next) => {
 module.exports.getAllMesage = async (req, res, next) => {
   try{
     const { from, to }= req.query; 
-    console.log(from, to)
+    //console.log(from, to)
     const messages = await messageModel.find({
       users:{
         $all: [from, to]
       }
-    })
-    console.log(messages)
+    }).sort({ createdAt: 1 });
+    //console.log(messages)
     const returnData = messages.map(x => {
       return {
         self: x.sender.toString() === from,
-        message: x.text
+        message: x.text,
+        time: x.createdAt.toDateString().toString(),
+        //sender: x.sender.toString()
       }
     })
-    console.log(returnData)
+    //console.log(returnData)
     res.json({returnData})
 
   } catch (error){

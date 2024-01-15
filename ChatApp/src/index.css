@@ -23,3 +23,12 @@
   box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
   height: 70px;
 }
+
+.extra-small{
+  font-size: 0.7rem; /* 12px */
+  line-height: 1rem; /* 16px */
+}
+
+.gray-background{
+  background-color:rgba(0, 0, 0, 0.2)
+}

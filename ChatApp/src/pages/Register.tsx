@@ -4,6 +4,8 @@ import {EyeFilledIcon} from "../assets/EyeFilledIcon";
 import {EyeSlashFilledIcon} from "../assets/EyeSlashFilledIcon";
 import axios from "axios";
 import { useNavigate } from 'react-router-dom';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function Register () {
   const navigate = useNavigate();
@@ -24,6 +26,9 @@ function Register () {
     console.log(username, password, email)
     if (!data.status){
       console.log(data.message)
+      toast.error(data.message, {
+        position: "top-left"
+      });
     } else {
       console.log(data)
       localStorage.setItem("user", data.token)
@@ -33,6 +38,7 @@ function Register () {
   return (
     <div className="flex flex-col items-center justify-items-center">
       <div className="flex flex-col items-center justify-items-center w-1/3 bg-emerald-50 p-3 rounded-lg">
+        <ToastContainer />
         <h2>Sign Up</h2>
         <Input 
           className="my-3 w-3/4"

@@ -14,15 +14,19 @@ module.exports.register = async (req, res, next) => {
     const {username, email, password} = req.body;
 
     const usernameCheck = await User.findOne({username});
-    console.log(usernameCheck)
+    //console.log(usernameCheck)
     if (usernameCheck){
-      return res.json({"message":"Username already exists", status:false});
+      return res.json({"message":"Username already exists.", status:false});
     }
 
     const emailCheck = await User.findOne({email});
-    console.log(emailCheck)
+    //console.log(emailCheck)
     if (emailCheck){
-      return res.json({"message":"Email already exists", status:false});
+      return res.json({"message":"Email already exists.", status:false});
+    }
+
+    if (username.length < 4 || password.length < 4) {
+      return res.json({"message":"Username and password must have at least 5 characters.", status:false});
     }
 
     const passwordHash = await brcypt.hash(password,10)
@@ -49,23 +53,29 @@ module.exports.login = async (req, res, next) => {
   try{
     const {username, password} = req.body;
 
-    const passwordHash = await brcypt.hash(password,10)
-
     const loginUser = await User.findOne({username});
     if (!loginUser){
       return res.json({"message":"Incorrect Username or Password", status:false});
     }
 
-    const validation = brcypt.compare(password, loginUser.password)
-    if (!validation){
-      return res.json({"message":"Incorrect Username or Password", status:false});
-    }
+    brcypt.compare(password, loginUser.password, (error, result) =>{
+      if (error){
+        console.log(error)
+        return res.json({"message":"Incorrect Username or Password", status:false});
+      } else {
+        if (result){
+          delete loginUser.password;
 
-    delete loginUser.password;
+          const token = generateAccessToken(loginUser)
 
-    const token = generateAccessToken(loginUser)
+          return res.json({status:true, loginUser, token})    
+        } else {
+          return res.json({"message":"Incorrect Username or Password", status:false});
+        }
+      }
+      
+    })
 
-    return res.json({status:true, loginUser, token})    
   } catch(error){
     next(error)
   }
@@ -114,7 +124,7 @@ module.exports.currentUser = async (req, res, next) => {
     if (token == null) return res.sendStatus(401)
 
     jwt.verify(token, process.env.JWT, (err, user) => {
-      console.log(err)
+      //console.log(err)
 
       if (err) return res.sendStatus(403)
 

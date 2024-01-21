@@ -1,7 +1,7 @@
 import { Message, MessageInfo } from "./types";
 
 const MessageBox: React.FC<MessageInfo> = ({ text, username}) => {
-  console.log(text, username)
+  //console.log(text, username)
   return (
     <div className="my-2">
       {text.self ? 

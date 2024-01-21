@@ -9,7 +9,7 @@ const UserTag: React.FC<TagInfo> = ({user, index, func}) => {
         <p>{user.username[0]}</p>
       </div>
       <p className="font-black">{user.username}</p>              
-  </button>
+    </button>
   )
 }
 

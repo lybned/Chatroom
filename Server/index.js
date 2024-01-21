@@ -26,7 +26,7 @@ const server = app.listen(process.env.PORT, () => {
 })
 
 
-const socketIo = socket(server, {
+let io = socket(server, {
   cors:{
     origin: "http://localhost:5173",
     credentials: true,
@@ -35,19 +35,26 @@ const socketIo = socket(server, {
 
 global.onlineUsers = new Map();
 
-socketIo.on("connection", (socket) => {
+io.on("connection", (socket) => {
   global.chatSocket = socket;
-  
+  //console.log("Connection", socket)
   socket.on("add-user", (userId) => {
-    onlineUsers.set(userId, socket.id);
+    //console.log("userId",userId)
+    global.onlineUsers.set(userId, socket.id);
+    //console.log("global.onlineUsers", global.onlineUsers)
   })
 
   socket.on("send-msg", (data) => {
-    console.log(data)
+    //console.log("data",data)
+    //console.log("onlineUsers", global.onlineUsers)
     const sendUserSocket = onlineUsers.get(data.to)
-    console.log(sendUserSocket)
+    //console.log("sendUserSocket", sendUserSocket)
     if (sendUserSocket){
-      socket.to(sendUserSocket).emit("msg-recieve",data.msg, data.date)
+      //console.log("Seng to client")
+      socket.to(sendUserSocket).emit("msg-recieve",data)
+      socket.emit("all",data)
     }
   })
 })
+
+//maybe because the socket are different in each connection?

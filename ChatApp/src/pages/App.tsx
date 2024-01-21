@@ -6,9 +6,14 @@ import { User, Message } from "./types";
 import {io} from "socket.io-client";
 import { PaperAirplaneIcon } from '@heroicons/react/24/solid'
 import UserTag from "../component/UserTag";
+import { redirect } from "react-router-dom";
 
 function App() {
-  const socket = useRef();
+    if (localStorage.getItem("user") === null) {
+      console.log(`localStorage.getItem("user")`, localStorage.getItem("user"))
+      redirect("/signin"); // Redirect to the login page
+    }  
+  let socket = useRef();
 
   const [isOpen, setIsOpen] = useState(false);
 
@@ -27,6 +32,12 @@ function App() {
 
 
   useEffect(() => {
+
+    //Temp solution. Redirect user to signin page when not authenticated
+    
+
+    
+
     axios.get("/api/users")
     .then((res) => {
       const profiles = res.data
@@ -56,12 +67,6 @@ function App() {
     }
 
     console.log("socket.current", socket.current)
-    if (socket.current){
-      socket.current.on("msg-recieve", (msg, date) => {
-        console.log(msg, date)
-        setArrivalMessage({self:false, message: msg, time:date})
-      })
-    }
   }, [currentUser])
 
 
@@ -100,6 +105,7 @@ function App() {
       from: usernames[currentTarget]?._id,
       message: message,
       sender: currentUser?._id,
+      date: (new Date()).toDateString()
     })
 
     let messages = [...currentMessages];
@@ -111,8 +117,19 @@ function App() {
   }
 
   useEffect(() => {
+    if (socket.current) {
+      socket.current.on("msg-recieve", (data) => {
+        console.log(data.message, data.date)
+        setArrivalMessage({self:false, message: data.message, time:data.date})
+      })
 
-  }, [])
+      socket.current.on("all", (data) => {
+        console.log("datadata", data)
+        //setArrivalMessage({self:false, message: data.message, time:data.date})
+      })
+    }
+    console.log("socket.current",socket.current)    
+  }, [socket])
 
   //When there is a new arrival message
   useEffect(() => {
@@ -196,6 +213,7 @@ function App() {
           <div></div>
         </button>
       </div>
+      
     </div>
   )
 }

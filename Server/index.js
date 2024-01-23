@@ -26,6 +26,7 @@ const server = app.listen(process.env.PORT, () => {
 })
 
 
+/* Everything about the socket is listed below */
 let io = socket(server, {
   cors:{
     origin: "http://localhost:5173",
@@ -33,24 +34,22 @@ let io = socket(server, {
   }
 })
 
+//Map user to their sockety
 global.onlineUsers = new Map();
 
 io.on("connection", (socket) => {
+
   global.chatSocket = socket;
-  //console.log("Connection", socket)
   socket.on("add-user", (userId) => {
-    //console.log("userId",userId)
     global.onlineUsers.set(userId, socket.id);
-    //console.log("global.onlineUsers", global.onlineUsers)
   })
 
+  //When message is sent to the server
   socket.on("send-msg", (data) => {
-    //console.log("data",data)
-    //console.log("onlineUsers", global.onlineUsers)
+
+    //ALso notify the client who received the message
     const sendUserSocket = onlineUsers.get(data.to)
-    //console.log("sendUserSocket", sendUserSocket)
     if (sendUserSocket){
-      //console.log("Seng to client")
       socket.to(sendUserSocket).emit("msg-recieve",data)
       socket.emit("all",data)
     }

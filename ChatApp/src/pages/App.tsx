@@ -32,8 +32,6 @@ function App() {
 
 
   useEffect(() => {
-
-    //Temp solution. Redirect user to signin page when not authenticated
     
 
     
@@ -58,6 +56,23 @@ function App() {
   }, [])
 
 
+  
+  useEffect(() => {
+    if (currentUser && currentTarget > -1 && usernames[currentTarget]){
+      axios.get("/api/messages", {
+        params: {
+          from: currentUser?._id,
+          to: usernames[currentTarget]?._id        
+        }
+      }).then(res => {
+        setCurrentMessage(res.data.returnData)
+      })      
+    }
+
+  }, [currentTarget, currentUser, usernames])
+
+
+
   useEffect(() => {
 
     //If someone is logged in
@@ -70,22 +85,9 @@ function App() {
   }, [currentUser])
 
 
-  useEffect(() => {
-    console.log(currentUser, currentTarget)
-    if (currentUser && currentTarget > -1 && usernames[currentTarget]){
-      axios.get("/api/messages", {
-        params: {
-          from: currentUser?._id,
-          to: usernames[currentTarget]?._id        
-        }
-      }).then(res => {
-        console.log(res)
-        setCurrentMessage(res.data.returnData)
-      })      
-    }
 
-  }, [currentTarget, currentUser, usernames])
 
+  //When message is sent
   const sendMessage = async () => {
     console.log(message, currentUser?._id, usernames[currentTarget]?._id)
     await axios.post("/api/message", {
@@ -99,7 +101,7 @@ function App() {
       console.error(err)
     })
 
-    //Current user
+    //Emit send-msg event to server
     socket.current.emit("send-msg", {
       to: currentUser._id,
       from: usernames[currentTarget]?._id,
@@ -116,7 +118,9 @@ function App() {
 
   }
 
+
   useEffect(() => {
+    //IF we created the socket, add socket event
     if (socket.current) {
       socket.current.on("msg-recieve", (data) => {
         console.log(data.message, data.date)
@@ -125,7 +129,6 @@ function App() {
 
       socket.current.on("all", (data) => {
         console.log("datadata", data)
-        //setArrivalMessage({self:false, message: data.message, time:data.date})
       })
     }
     console.log("socket.current",socket.current)    
@@ -136,6 +139,7 @@ function App() {
     arrivalMessage && setCurrentMessage((prev) => [...prev, arrivalMessage])
   }, [arrivalMessage])
 
+  //Scroll to the current message
   useEffect(() => {
     scrollRef.current?.scrollIntoView({ behaviour: "smooth"})
   }, [currentMessages])

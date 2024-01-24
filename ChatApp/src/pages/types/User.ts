@@ -11,3 +11,10 @@ export interface TagInfo {
   index: number,
   func: () => void
 }
+
+export interface ChatAreaInput{
+  currentTarget: number,
+  usernames:User[],
+  currentUser:User,
+  openCanvas: () => void;
+}

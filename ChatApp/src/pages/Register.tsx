@@ -5,6 +5,8 @@ import {EyeSlashFilledIcon} from "../assets/EyeSlashFilledIcon";
 import axios from "axios";
 import { useNavigate } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
+import UserImage from "../assets/user.png";
+
 import 'react-toastify/dist/ReactToastify.css';
 
 function Register () {
@@ -37,9 +39,16 @@ function Register () {
   }
   return (
     <div className="flex flex-col items-center justify-items-center">
-      <div className="flex flex-col items-center justify-items-center w-1/3 bg-emerald-50 p-3 rounded-lg">
+      <div className="flex flex-col items-center justify-items-center w-full sm:w-2/3 md:w-1/2 lg:w-1/3 bg-slate-50 p-3 rounded-lg">
         <ToastContainer />
-        <h2>Sign Up</h2>
+        <img
+            src={UserImage}
+            alt="NextUI Album Cover"
+            className="p-4 bg-slate-200 my-3 w-1/3 2xl:w-1/5 rounded-lg"
+          />            
+
+
+        <p className="text-2xl font-bold">Sign Up</p>
         <Input 
           className="my-3 w-3/4"
           type="text"
@@ -50,7 +59,6 @@ function Register () {
 
         <Input
           label="Password"
-          variant="bordered"
           placeholder="Enter your password"
           onValueChange={setPassword}
           endContent={
@@ -74,7 +82,7 @@ function Register () {
           onValueChange={setEmail}
         />
 
-        <Button onClick={RegisterAccount}>Sign Up</Button>
+        <Button onClick={RegisterAccount} className="my-4">Sign Up</Button>
 
 
         <p>Already have an account? <Link href="/signin">Sign In here</Link></p>

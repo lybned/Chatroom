@@ -1,11 +1,13 @@
 
-import {Input, Button, Link} from "@nextui-org/react";
+import {Input, Button, Link, Image} from "@nextui-org/react";
 import React, { useState } from 'react';
 import {EyeFilledIcon} from "../assets/EyeFilledIcon";
 import {EyeSlashFilledIcon} from "../assets/EyeSlashFilledIcon";
 import axios from "axios";
 import { useNavigate } from 'react-router-dom';
 import { toast, ToastContainer } from 'react-toastify';
+import UserImage from "../assets/user.png";
+
 import 'react-toastify/dist/ReactToastify.css';
 
 function Login() {
@@ -39,9 +41,17 @@ function Login() {
   return(
 
     <div className="flex flex-col items-center justify-items-center">
-      <div className="flex flex-col items-center justify-items-center w-1/3 bg-emerald-50 p-3 rounded-lg">
+      <div className="flex flex-col items-center justify-items-center w-full sm:w-2/3 md:w-1/2 lg:w-1/3 bg-slate-50 p-3 rounded-lg">
         <ToastContainer />
-        <h2>Sign In</h2>
+
+          <img
+            src={UserImage}
+            alt="NextUI Album Cover"
+            className="p-4 bg-slate-200 my-3 w-1/3 2xl:w-1/5 rounded-lg"
+          />            
+
+
+        <p className="text-2xl font-bold">Sign In</p>
         <Input 
           className="my-3 w-3/4"
           type="text"
@@ -52,7 +62,6 @@ function Login() {
 
         <Input
           label="Password"
-          variant="bordered"
           placeholder="Enter your password"
           onValueChange={setPassword}
           endContent={
@@ -65,10 +74,13 @@ function Login() {
             </button>
           }
           type={isVisible ? "text" : "password"}
-          className="my-3 bg-default-100 rounded-medium w-3/4"
+          className="bg-default-100 rounded-medium w-3/4 my-3"
         />
 
-        <Button onClick={SignIn}>Sign In</Button>
+
+        <Button onClick={SignIn} className="my-4">Sign In</Button>          
+
+
 
 
         <p>Does not have an account? <Link href="/signup">Sign Up here</Link></p>

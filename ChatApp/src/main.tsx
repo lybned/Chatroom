@@ -2,6 +2,7 @@ import ReactDOM from 'react-dom/client'
 import App from './pages/App.tsx'
 import Login from './pages/Login.tsx'
 import Register from './pages/Register.tsx'
+import Home from './pages/Home.tsx'
 import './index.css'
 import {NextUIProvider} from "@nextui-org/react"
 import axios from "axios"
@@ -24,8 +25,12 @@ import {
 
 const router = createBrowserRouter([
   {
-    path: "/",
+    path: "/Chat",
     element: <App />,
+  },
+  {
+    path: "/",
+    element: <Home />,
   },
   {
     path: "/signin",
